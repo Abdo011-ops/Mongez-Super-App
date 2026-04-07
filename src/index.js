@@ -13,7 +13,3 @@ root.render(
     </LanguageProvider>
   </ThemeProvider>
 );
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js');
-}
