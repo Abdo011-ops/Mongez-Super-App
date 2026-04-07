@@ -12,10 +12,8 @@ import { LanguageContext } from './contexts/LanguageContext';
 // المكتبات المثبتة والموجودة في package.json
 import { Camera } from '@capacitor/camera';
 import { Geolocation } from '@capacitor/geolocation';
-import { Filesystem, Directory } from '@capacitor/filesystem';
 import { VoiceRecorder } from 'capacitor-voice-recorder';
 import { FirebaseMessaging } from '@capacitor-firebase/messaging';
-import { Capacitor } from '@capacitor/core';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -26,27 +24,18 @@ function App() {
   const { t } = useContext(LanguageContext);
   const isAdmin = user?.email === 'admin@example.com';
 
-  // طلب جميع الصلاحيات المتاحة (بدون جهات الاتصال)
+  // طلب جميع الصلاحيات الأساسية
   const requestAllPermissions = async () => {
     try {
-      // 1. الكاميرا
       const cameraPerm = await Camera.requestPermissions();
       console.log('Camera:', cameraPerm);
-
-      // 2. الموقع
       const locationPerm = await Geolocation.requestPermissions();
       console.log('Location:', locationPerm);
-
-      // 3. الميكروفون (تسجيل الصوت)
       const micPerm = await VoiceRecorder.requestAudioRecordingPermission();
       console.log('Microphone:', micPerm);
-
-      // 4. الإشعارات
       const notifPerm = await FirebaseMessaging.requestPermissions();
       console.log('Notifications:', notifPerm);
-
-      // 5. الملفات (تتم تلقائياً مع Filesystem)
-      console.log('تم منح الصلاحيات الأساسية (كاميرا، موقع، ميكروفون، إشعارات)');
+      console.log('تم منح الصلاحيات الأساسية');
     } catch (error) {
       console.error('Permission error:', error);
     }
@@ -70,13 +59,11 @@ function App() {
           const token = await FirebaseMessaging.getToken();
           console.log('FCM Token:', token.token);
           await FirebaseMessaging.addListener('notificationReceived', (payload) => {
-            console.log('Notification received in foreground:', payload);
+            console.log('Notification received:', payload);
           });
           await FirebaseMessaging.addListener('notificationActionPerformed', (payload) => {
-            console.log('Notification action performed:', payload);
+            console.log('Notification tapped:', payload);
           });
-        } else {
-          console.log('Notifications permission denied');
         }
       } catch (error) {
         console.error('Error setting up notifications:', error);
