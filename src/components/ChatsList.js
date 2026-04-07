@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useContext } from 'react';
 import { database, auth } from '../firebase';
 import { ref, onValue } from 'firebase/database';
@@ -7,45 +8,9 @@ import { LanguageContext } from '../contexts/LanguageContext';
 export default function ChatsList({ setCurrentChat }) {
   const [chats, setChats] = useState([]);
   const [activeTab, setActiveTab] = useState('all');
-  const [loadingName, setLoadingName] = useState('');
   const { darkMode } = useContext(ThemeContext);
   const { t } = useContext(LanguageContext);
   const userId = auth.currentUser?.uid;
-
-  useEffect(() => {
-    const fullName = "عبد الرحمن";
-    let index = 0;
-    const checkSpeed = async () => {
-      const start = Date.now();
-      try {
-        await fetch('https://www.google.com/favicon.ico', { mode: 'no-cors' });
-        const delay = Date.now() - start;
-        const interval = Math.max(50, Math.min(300, delay * 2));
-        const timer = setInterval(() => {
-          if (index <= fullName.length) {
-            setLoadingName(fullName.slice(0, index));
-            index++;
-          } else {
-            clearInterval(timer);
-            setTimeout(() => setLoadingName(''), 500);
-          }
-        }, interval);
-        return () => clearInterval(timer);
-      } catch {
-        const timer = setInterval(() => {
-          if (index <= fullName.length) {
-            setLoadingName(fullName.slice(0, index));
-            index++;
-          } else {
-            clearInterval(timer);
-            setTimeout(() => setLoadingName(''), 500);
-          }
-        }, 200);
-        return () => clearInterval(timer);
-      }
-    };
-    checkSpeed();
-  }, []);
 
   useEffect(() => {
     if (!userId) return;
@@ -64,8 +29,6 @@ export default function ChatsList({ setCurrentChat }) {
             let lastMessageText = msg.text || '';
             if (msg.imageUrl) lastMessageText = '🖼️ صورة';
             else if (msg.fileUrl) lastMessageText = '📎 ملف';
-            else if (msg.voiceNote) lastMessageText = '🎤 رسالة صوتية';
-
             chatsMap.set(chatId, {
               id: chatId,
               name: otherId.slice(0, 12),
@@ -81,7 +44,6 @@ export default function ChatsList({ setCurrentChat }) {
               let lastMessageText = msg.text || '';
               if (msg.imageUrl) lastMessageText = '🖼️ صورة';
               else if (msg.fileUrl) lastMessageText = '📎 ملف';
-              else if (msg.voiceNote) lastMessageText = '🎤 رسالة صوتية';
               existing.lastMessage = lastMessageText;
               existing.timestamp = msg.timestamp;
             }
@@ -111,36 +73,6 @@ export default function ChatsList({ setCurrentChat }) {
 
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto' }}>
-      {loadingName && (
-        <div style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          background: darkMode ? '#333' : '#fff',
-          padding: 20,
-          borderRadius: 20,
-          boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-          zIndex: 2000,
-          textAlign: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 10
-        }}>
-          <div style={{
-            width: 50,
-            height: 50,
-            border: '4px solid #075E54',
-            borderTop: '4px solid transparent',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite'
-          }}></div>
-          <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-          <span style={{ fontSize: 18, fontWeight: 'bold', color: darkMode ? '#fff' : '#000' }}>{loadingName}</span>
-        </div>
-      )}
-
       <div style={{ display: 'flex', borderBottom: `1px solid ${darkMode ? '#2b2b2b' : '#e0e0e0'}`, background: darkMode ? '#1e1e1e' : '#fff' }}>
         {['groups', 'favorites', 'unread', 'all'].map((tab) => (
           <button
@@ -195,4 +127,4 @@ export default function ChatsList({ setCurrentChat }) {
       ))}
     </div>
   );
-        }
+              }
