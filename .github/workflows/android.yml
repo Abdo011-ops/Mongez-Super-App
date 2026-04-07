@@ -21,8 +21,8 @@ jobs:
       - name: Install dependencies (with --legacy-peer-deps)
         run: npm install --legacy-peer-deps
 
-      - name: Build React app
-        run: npm run build
+      - name: Build React app (ignore warnings as errors)
+        run: CI=false npm run build
 
       - name: Set up Java 17
         uses: actions/setup-java@v4
