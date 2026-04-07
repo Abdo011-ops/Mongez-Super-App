@@ -53,4 +53,4 @@ export default function Auth({ setUser }) {
       </button>
     </div>
   );
-            }
+}
