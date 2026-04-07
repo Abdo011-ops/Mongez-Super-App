@@ -12,6 +12,7 @@ import {
 import { getDatabase, ref, push, onValue, update, remove, set, get } from 'firebase/database';
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
+// ضع بيانات مشروعك من Firebase Console هنا
 const firebaseConfig = {
   apiKey: 'AIzaSyD1wXmaPWK1WGDKMnhyXrMVxdjjSk68cYs',
   authDomain: 'abdulrahman-mohammed-e57be.firebaseapp.com',
