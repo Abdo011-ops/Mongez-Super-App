@@ -18,8 +18,8 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies (npm install)
-        run: npm install
+      - name: Install dependencies (with --legacy-peer-deps)
+        run: npm install --legacy-peer-deps
 
       - name: Build React app
         run: npm run build
@@ -36,8 +36,8 @@ jobs:
       - name: Install Capacitor Android platform
         run: npx cap add android
 
-      - name: Copy web build to Android
-        run: npx cap copy
+      - name: Sync Capacitor (copy web build and plugins)
+        run: npx cap sync
 
       - name: Build APK (Debug)
         run: |
