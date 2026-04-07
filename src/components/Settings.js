@@ -42,4 +42,4 @@ export default function Settings({ onClose }) {
       <hr /><button onClick={() => auth.signOut()} style={{ background: 'red', color: 'white', padding: 10, border: 'none', width: '100%' }}>{t('logout')}</button>
     </div>
   );
-                                                }
+  }
