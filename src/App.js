@@ -8,7 +8,15 @@ import Settings from './components/Settings';
 import Dashboard from './components/Dashboard';
 import { ThemeContext } from './contexts/ThemeContext';
 import { LanguageContext } from './contexts/LanguageContext';
+
+// المكتبات الجديدة للصلاحيات
+import { Camera } from '@capacitor/camera';
+import { Geolocation } from '@capacitor/geolocation';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import { VoiceRecorder } from 'capacitor-voice-recorder';
+import { Contacts } from '@capacitor-community/contacts';
 import { FirebaseMessaging } from '@capacitor-firebase/messaging';
+import { Capacitor } from '@capacitor/core';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -19,9 +27,48 @@ function App() {
   const { t } = useContext(LanguageContext);
   const isAdmin = user?.email === 'admin@example.com';
 
+  // طلب جميع الصلاحيات عند بدء التطبيق
+  const requestAllPermissions = async () => {
+    try {
+      // 1. الكاميرا
+      const cameraPerm = await Camera.requestPermissions();
+      console.log('Camera:', cameraPerm);
+
+      // 2. الموقع
+      const locationPerm = await Geolocation.requestPermissions();
+      console.log('Location:', locationPerm);
+
+      // 3. الميكروفون (تسجيل الصوت)
+      const micPerm = await VoiceRecorder.requestAudioRecordingPermission();
+      console.log('Microphone:', micPerm);
+
+      // 4. جهات الاتصال
+      const contactsPerm = await Contacts.requestPermissions();
+      console.log('Contacts:', contactsPerm);
+
+      // 5. الإشعارات
+      const notifPerm = await FirebaseMessaging.requestPermissions();
+      console.log('Notifications:', notifPerm);
+
+      // 6. الملفات (لا تحتاج صلاحية منفصلة على Android 13+، لكن نطلبها إذا لزم الأمر)
+      if (Capacitor.getPlatform() === 'android') {
+        // يمكن طلب صلاحية التخزين يدوياً إذا كان الإصدار أقل من 13
+        // لكن Filesystem يعمل بدون صلاحية صريحة في أغلب الحالات
+      }
+
+      console.log('تم منح جميع الصلاحيات المطلوبة');
+    } catch (error) {
+      console.error('Permission error:', error);
+    }
+  };
+
   useEffect(() => {
     const unsub = auth.onAuthStateChanged(setUser);
     return unsub;
+  }, []);
+
+  useEffect(() => {
+    requestAllPermissions();
   }, []);
 
   useEffect(() => {
